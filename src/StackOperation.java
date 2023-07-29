@@ -1,10 +1,25 @@
 import java.util.LinkedList;
-
+/**
+ * StackOperation class extends Word
+ * This class is used to represent stack operations
+ *
+ * @author  MBlagdon
+ */
 public class StackOperation extends Word{
+    /**
+     * Constructor for StackOperation class
+     *
+     * @param string of operation
+     */
     public StackOperation(String string) {
         super(string);
     }
-
+    /**
+     * Executes the stack operation
+     *
+     * @param stack on which the operation will be performed
+     * @return updated stack after performing operation
+     */
     public LinkedList<WordBox<Word>> runOperation(LinkedList<WordBox<Word>> stack){
         switch (super.getString()) {
             case "+":
@@ -28,29 +43,29 @@ public class StackOperation extends Word{
                 WordBox<Word> negatedNumber = stack.removeLast();
                 if (negatedNumber.getWord() instanceof Number) {
                     Number n = new Number((negatedNumber.getWord()).negate());
-                    stack.addLast(new WordBox<Word>(n));
+                    stack.addLast(new WordBox<>(n));
                     return stack;
                 }
                 else if (negatedNumber.getWord() instanceof Quote) {
                     String n = ( negatedNumber.getWord()).negate();
-                    stack.addLast(new WordBox<Word>(new Quote(n)));
+                    stack.addLast(new WordBox<>(new Quote(n)));
                     return stack;
                 }
             case "*":
                 WordBox<Word> firstFactor = stack.removeLast();
                 WordBox<Word> secondFactor = stack.removeLast();
                 if (firstFactor.getWord() instanceof Number && secondFactor.getWord() instanceof Number) {
-                    String n = ((Number) firstFactor.getWord()).multiply(secondFactor.getWord().getString());
-                    stack.addLast(new WordBox<Word>(new Number(n)));
+                    String n = firstFactor.getWord().multiply(secondFactor.getWord().getString());
+                    stack.addLast(new WordBox<>(new Number(n)));
                 } else {
                     if (firstFactor.getWord() instanceof Number){
-                        firstFactor = new WordBox<Word>(new Quote(firstFactor.getWord().getString()));
+                        firstFactor = new WordBox<>(new Quote(firstFactor.getWord().getString()));
                     }
                     else if (secondFactor.getWord() instanceof Number){
-                        secondFactor = new WordBox<Word>(new Quote(secondFactor.getWord().getString()));
+                        secondFactor = new WordBox<>(new Quote(secondFactor.getWord().getString()));
                     }
                     String newWord = (firstFactor.getWord()).multiply((secondFactor.getWord()).getString());
-                    stack.addLast(new WordBox<Word>(new Quote(newWord)));
+                    stack.addLast(new WordBox<>(new Quote(newWord)));
                 }
                 return stack;
             case "dup":

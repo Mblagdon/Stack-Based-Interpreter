@@ -5,20 +5,31 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+/**
+ * FileReader class to read and process words from a file argument
+ *
+ * @author MBlagdon
+ */
 public class FileReader {
     private final static List<String> wordList = new ArrayList<>();
     private static Definition definition;
-
+    /**
+     * Main method for FileReader class
+     * Reads file specified by user and processes the words
+     *
+     * @param args command line arguments are not used in this program
+     * @throws IOException if error occurs while reading file
+     */
     public static void main(String[] args) throws IOException {
-        System.out.println("Please enter a filename, without quotes, for your argument:");
+        System.out.println("Please enter a filename for the argument you wish to try:");
         Scanner scanner = new Scanner(System.in);
         String filename = scanner.nextLine();
+        filename = filename.replaceAll("^\"|\"$", ""); // Remove leading and trailing quotes
         System.out.println();
 
-        try (Scanner s = new Scanner(new BufferedReader(new java.io.FileReader(filename)))) {
-            while (s.hasNext()) {
-                wordList.add(s.next().trim());
+        try (Scanner scanner1 = new Scanner(new BufferedReader(new java.io.FileReader(filename)))) {
+            while (scanner1.hasNext()) {
+                wordList.add(scanner1.next().trim());
             }
 
         } catch (FileNotFoundException e) {
@@ -33,7 +44,14 @@ public class FileReader {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Creates Word objects based on the strings in wordList
+     *
+     * @param wordList of strings to be converted into Word objects
+     * @param words linkedList of Word objects
+     * @return linkedList of Word objects
+     * @throws IOException if error occurs while reading file
+     */
     public static LinkedList<Word> createWords(List<String> wordList, LinkedList<Word> words) throws IOException {
         List<String> inputOutputWords = Stream.of("in", "out").collect(Collectors.toList());
         List<String> stackOperationWords = Stream.of("-", "+", "*", "dup", "swap", "pop").collect(Collectors.toList());
@@ -58,19 +76,20 @@ public class FileReader {
                 }
                 words.addLast(new Quote(quoteString.toString().trim()));
             } else if (':' == word.charAt(0) && iterator.hasNext()) {
-                String t = iterator.next();
-                ArrayList<String> stringArray = new ArrayList<>();
+                String definition = iterator.next();
+                ArrayList<String> definitionWords = new ArrayList<>();
                 while (iterator.hasNext()) {
                     String nextWord = iterator.next();
                     if (nextWord.charAt(0) == ':') {
                         break;
                     } else {
-                        stringArray.add(nextWord);
+                        definitionWords.add(nextWord);
                     }
                 }
-                LinkedList<Word> def = new LinkedList<>();
-                String result = processWords(createWords(stringArray, def));
-                words.addLast(new Definition(t, result));
+                LinkedList<Word> definitionObject = new LinkedList<>();
+                createWords(definitionWords, definitionObject);
+                String definitionResult = processWords(definitionObject);
+                words.addLast(new Definition(definition, definitionResult));
             } else if (inputOutputWords.contains(word)) {
                 if (word.equalsIgnoreCase("in")) {
                     IO in = new IO(word);
@@ -86,7 +105,13 @@ public class FileReader {
         }
         return words;
     }
-
+    /**
+     * Processes the words in the LinkedList
+     *
+     * @param words of word objects being processed
+     * @return result of processing
+     * @throws IOException if error occurs while reading file
+     */
     public static String processWords(LinkedList<Word> words) throws IOException {
         LinkedList<WordBox<Word>> stack = new LinkedList<>();
         for(Word word: words){
@@ -116,9 +141,13 @@ public class FileReader {
         }
         return null;
     }
-
+    /**
+     * Checks if given string is a number
+     *
+     * @param word to be checked
+     * @return boolean indicating if string is a number
+     */
     public static Boolean isNumber(String word) {
         return Pattern.compile("^\\d+$").asPredicate().test(word);
     }
 }
-
