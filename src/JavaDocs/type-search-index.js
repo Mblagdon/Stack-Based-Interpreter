@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Definition"},{"p":"<Unnamed>","l":"FileReader"},{"p":"<Unnamed>","l":"IO"},{"p":"<Unnamed>","l":"Number"},{"p":"<Unnamed>","l":"Quote"},{"p":"<Unnamed>","l":"StackOperation"},{"p":"<Unnamed>","l":"Word"},{"p":"<Unnamed>","l":"WordBox"}];updateSearchResults();
