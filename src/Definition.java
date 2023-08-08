@@ -7,6 +7,7 @@ import java.util.Map;
  * @author  MBlagdon
  */
 public class Definition extends Word{
+
     /**
      * Map where each entry is key-value pair representing the definition of a word
      */

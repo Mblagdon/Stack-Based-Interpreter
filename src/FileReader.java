@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  */
 public class FileReader {
     private final static List<String> wordList = new ArrayList<>();
-    private static Definition definition;
+    private static Map<String, Definition> definitions = new HashMap<>();
     /**
      * Main method for FileReader class
      * Reads file specified by user and processes the words
@@ -48,7 +48,7 @@ public class FileReader {
      * Creates Word objects based on the strings in wordList
      *
      * @param wordList of strings to be converted into Word objects
-     * @param words linkedList of Word objects
+     * @param words    linkedList of Word objects
      * @return linkedList of Word objects
      * @throws IOException if error occurs while reading file
      */
@@ -105,6 +105,7 @@ public class FileReader {
         }
         return words;
     }
+
     /**
      * Processes the words in the LinkedList
      *
@@ -114,33 +115,36 @@ public class FileReader {
      */
     public static String processWords(LinkedList<Word> words) throws IOException {
         LinkedList<WordBox<Word>> stack = new LinkedList<>();
-        for(Word word: words){
+        Map<String, Definition> definitions = new HashMap<>(); // Map to store the definitions
+
+        for (Word word : words) {
             WordBox<Word> box = new WordBox<>(word);
             if (word instanceof Definition) {
-                definition = (Definition) box.getWord();
+                Definition def = (Definition) box.getWord();
+                definitions.put(def.getString(), def); // Storing the definition in the map
             } else if (word instanceof StackOperation) {
                 stack = ((StackOperation) box.getWord()).runOperation(stack);
-                if (stack.size() == 1 && words.size() == 0) {
-                    System.out.println(stack.get(0).getWord().getString());
-                }
             } else if (word instanceof IO) {
                 ((IO) word).out(stack.removeLast().getWord().getString());
-            } else if (definition == null) {
-                stack.addLast(box);
-            } else if (definition.getDefinition().containsKey((word.getString()))){
-                String val = definition.getValue(word.getString());
-                if (isNumber(val)){
+            } else if (definitions.containsKey(word.getString())) { // Checking if the word is a defined term
+                Definition def = definitions.get(word.getString());
+                String val = def.getValue(word.getString());
+                if (isNumber(val)) {
                     stack.addLast(new WordBox<>(new Number(val)));
-                }
-                else {
+                } else {
                     stack.addLast(new WordBox<>(new Word(val)));
                 }
             } else {
                 stack.addLast(box);
             }
         }
-        return null;
+
+        if (stack.size() > 0) {
+            return stack.getLast().getWord().getString(); // return the final result
+        }
+        return ""; // return empty if stack is empty
     }
+
     /**
      * Checks if given string is a number
      *
