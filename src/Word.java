@@ -16,8 +16,7 @@ public class Word {
         this.string = string;
     }
     /**
-     * Getter for word's string
-     *
+     * Getter for word's string     *
      * @return value of word
      */
     public String getString() {
