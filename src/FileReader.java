@@ -21,7 +21,7 @@ public class FileReader {
      * @throws IOException if error occurs while reading file
      */
     public static void main(String[] args) throws IOException {
-        System.out.println("Please enter a filename for the argument you wish to try:");
+        System.out.println("Please enter a filename for the argument you wish to try, you may leaves quotes around the filename:");
         Scanner scanner = new Scanner(System.in);
         String filename = scanner.nextLine();
         filename = filename.replaceAll("^\"|\"$", ""); // Remove leading and trailing quotes
