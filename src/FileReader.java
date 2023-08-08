@@ -115,18 +115,18 @@ public class FileReader {
      */
     public static String processWords(LinkedList<Word> words) throws IOException {
         LinkedList<WordBox<Word>> stack = new LinkedList<>();
-        Map<String, Definition> definitions = new HashMap<>(); // Map to store the definitions
+        Map<String, Definition> definitions = new HashMap<>();
 
         for (Word word : words) {
             WordBox<Word> box = new WordBox<>(word);
             if (word instanceof Definition) {
                 Definition def = (Definition) box.getWord();
-                definitions.put(def.getString(), def); // Storing the definition in the map
+                definitions.put(def.getString(), def);
             } else if (word instanceof StackOperation) {
                 stack = ((StackOperation) box.getWord()).runOperation(stack);
             } else if (word instanceof IO) {
                 ((IO) word).out(stack.removeLast().getWord().getString());
-            } else if (definitions.containsKey(word.getString())) { // Checking if the word is a defined term
+            } else if (definitions.containsKey(word.getString())) {
                 Definition def = definitions.get(word.getString());
                 String val = def.getValue(word.getString());
                 if (isNumber(val)) {
@@ -140,9 +140,9 @@ public class FileReader {
         }
 
         if (stack.size() > 0) {
-            return stack.getLast().getWord().getString(); // return the final result
+            return stack.getLast().getWord().getString();
         }
-        return ""; // return empty if stack is empty
+        return "";
     }
 
     /**
